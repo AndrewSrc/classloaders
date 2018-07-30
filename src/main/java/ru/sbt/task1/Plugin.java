@@ -6,5 +6,6 @@ package ru.sbt.task1;
 public interface Plugin {
     //methods doesn't matter
     void doUsefull();
+    void loadImage();
 }
 

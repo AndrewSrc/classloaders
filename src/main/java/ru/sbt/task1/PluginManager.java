@@ -1,6 +1,12 @@
 package ru.sbt.task1;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Ваша задача написать загрузчик плагинов в вашу систему. Допустим вы пишите свой браузер и хотите,
@@ -14,13 +20,17 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class PluginManager {
     private final String pluginRootDirectory;
+    private Map<String, URLClassLoader> pluginLoaderMap = new HashMap<>();
 
     public PluginManager( String pluginRootDirectory ) {
         this.pluginRootDirectory = pluginRootDirectory;
     }
 
-    public Plugin load( String pluginName, String pluginClassName ) {
-        //todo
-        throw new NotImplementedException();
+    public Plugin load( String pluginName, String pluginClassName ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, MalformedURLException {
+        if ( !pluginLoaderMap.containsKey( pluginClassName ) ) {
+            //Загружаем плагин
+            pluginLoaderMap.put( pluginName, new URLClassLoader( new URL[]{ new URL( pluginRootDirectory + "/" + pluginName ) } ) );
+        }
+        return ( Plugin ) pluginLoaderMap.get( pluginName ).loadClass( pluginClassName ).newInstance();
     }
 }
